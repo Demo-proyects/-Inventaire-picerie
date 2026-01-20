@@ -21,12 +21,39 @@
     </script>
     <style>
         body { font-family: 'Inter', sans-serif; }
+        
+        /* Estilos para la funcionalidad del Ojo (URL) */
+        .url-input {
+            width: 100%;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            color: #1e293b;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            outline: none;
+        }
+        .dark .url-input {
+            background: #0f172a;
+            border-color: #334155;
+            color: #f1f5f9;
+        }
+        .url-hidden {
+            font-style: italic;
+            opacity: 0.6;
+            font-size: 0.85rem;
+            max-width: 120px;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
 <div class="container mx-auto px-4 py-10 max-w-[1600px]">
-    <!-- Header -->
     <header class="flex justify-between items-center mb-10 pb-6 border-b border-gray-200 dark:border-slate-700">
         <div>
             <h1 class="text-3xl font-bold tracking-tight">📦 Inventaire Épicerie</h1>
@@ -37,14 +64,12 @@
         </button>
     </header>
     
-    <!-- Search Bar -->
     <div class="relative max-w-2xl mx-auto mb-8">
         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400 text-xl">🔍</span>
         <input type="text" id="searchInput" placeholder="Chercher produit, marque, épicerie..." 
             class="w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-800 border-2 border-gray-300 dark:border-slate-600 rounded-xl shadow-lg focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 outline-none transition-all text-base">
     </div>
 
-    <!-- Filters -->
     <div class="flex gap-3 mb-6 flex-wrap justify-center">
         <button onclick="filterByCategory('all')" class="filter-btn px-4 py-2 rounded-full bg-blue-500 text-white font-semibold text-sm hover:bg-blue-600 transition-all">
             Tous
@@ -63,7 +88,6 @@
         </button>
     </div>
 
-    <!-- Table -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-slate-700">
         <div class="overflow-x-auto">
             <table class="w-full border-collapse min-w-[1200px]">
@@ -73,11 +97,11 @@
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Spécifique</th>
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Marque</th>
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Épicerie</th>
-                        <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Format (ml/g)</th>
+                        <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Format</th>
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Prix Rég.</th>
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Prix Rabais</th>
                         <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Date Exp.</th>
-                        <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Lien</th>
+                        <th class="px-4 py-4 text-left text-xs font-semibold text-gray-600 dark:text-slate-400 uppercase tracking-wider">Lien & Copie</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody" class="divide-y divide-gray-200 dark:divide-slate-700"></tbody>
@@ -86,14 +110,13 @@
     </div>
 </div>
 
-<!-- Toast Notification -->
 <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 px-6 py-3 rounded-full shadow-2xl opacity-0 invisible transition-all duration-300 flex items-center gap-3 z-50">
     <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
     <span class="font-semibold">Copié !</span>
 </div>
 
 <script>
-    // Data
+    // Se conservan todos los datos originales del archivo index.html
     const rawData = [
         // RICOTTA
         { categorie: "ricotta", nom: "Ricotta 475 ml", specifique: "Ricotta", marque: "Tre Stelle", epicerie: "Maxi", format: 475, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=fromage+ricotta" },
@@ -102,7 +125,6 @@
         { categorie: "ricotta", nom: "Fromage frais sans lactose ricotta 10% m.g. 400 ml", specifique: "Ricotta sans lactose", marque: "Tre Stelle", epicerie: "Maxi", format: 400, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=fromage+ricotta" },
         { categorie: "ricotta", nom: "Fromage ricotta léger 475 ml", specifique: "Ricotta léger", marque: "Tre Stelle", epicerie: "Maxi", format: 475, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=fromage+ricotta" },
         { categorie: "ricotta", nom: "Ricotta Fiorella 475 ml", specifique: "Ricotta Fiorella", marque: "Saputo", epicerie: "Maxi", format: 475, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=fromage+ricotta" },
-        
         { categorie: "ricotta", nom: "Fromage ricotta léger 280 ml", specifique: "Ricotta léger", marque: "Tre Stelle", epicerie: "IGA", format: 280, unite: "ml", prix: 5.99, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
         { categorie: "ricotta", nom: "Ricotta sans lactose 400 ml", specifique: "Ricotta sans lactose", marque: "Tre Stelle", epicerie: "IGA", format: 400, unite: "ml", prix: 8.99, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
         { categorie: "ricotta", nom: "Fromage ricotta Fiorella 300 ml", specifique: "Ricotta Fiorella", marque: "Saputo Artisan", epicerie: "IGA", format: 300, unite: "ml", prix: 6.49, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
@@ -113,20 +135,16 @@
         { categorie: "ricotta", nom: "Fromage ricotta Fiorella léger 300 ml", specifique: "Ricotta Fiorella léger", marque: "Saputo Artisan Lite", epicerie: "IGA", format: 300, unite: "ml", prix: 6.49, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
         { categorie: "ricotta", nom: "Fromage ricotta très onctueux 475 ml", specifique: "Ricotta très onctueux", marque: "Tre Stelle", epicerie: "IGA", format: 475, unite: "ml", prix: 8.99, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
         { categorie: "ricotta", nom: "Fromage ricotta Di Campagna léger 400 ml", specifique: "Ricotta Di Campagna léger", marque: "Saputo Gourmet", epicerie: "IGA", format: 400, unite: "ml", prix: 6.99, url: "https://www.iga.net/fr/search?k=fromage%20ricotta" },
-        
         { categorie: "ricotta", nom: "Fromage ricotta 475 ml", specifique: "Ricotta", marque: "Your Fresh Market", epicerie: "Walmart", format: 475, unite: "ml", prix: 7.48, url: "https://www.walmart.ca/fr/search?q=persil+frais" },
         { categorie: "ricotta", nom: "Fromage ricotta sans lactose blanc 400 ml", specifique: "Ricotta sans lactose", marque: "Tre Stelle", epicerie: "Walmart", format: 400, unite: "ml", prix: 7.77, url: "https://www.walmart.ca/fr/search?q=persil+frais" },
         { categorie: "ricotta", nom: "Fromage ricotta traditionnel blanc 475 ml", specifique: "Ricotta traditionnel", marque: "Tre Stelle", epicerie: "Walmart", format: 475, unite: "ml", prix: 9.23, url: "https://www.walmart.ca/fr/search?q=persil+frais" },
         { categorie: "ricotta", nom: "Fromage ricotta plus lisse frais doux blanc 475 ml", specifique: "Ricotta plus lisse", marque: "Tre Stelle", epicerie: "Walmart", format: 475, unite: "ml", prix: 9.23, url: "https://www.walmart.ca/fr/search?q=persil+frais" },
-        
         { categorie: "ricotta", nom: "Fromage ricotta léger 300 ml", specifique: "Ricotta léger", marque: "Saputo", epicerie: "Avril", format: 300, unite: "ml", prix: 6.59, url: "https://avril.ca/fr/catalogsearch/result/?q=persil%20frais" },
         { categorie: "ricotta", nom: "Fromage ricotta de brebis 2000 ml", specifique: "Ricotta de brebis", marque: "Fromagerie La Moutonnière", epicerie: "Avril", format: 2000, unite: "ml", prix: 73.14, rabais: 36.57, url: "https://avril.ca/fr/catalogsearch/result/?q=persil%20frais" },
-        
         { categorie: "ricotta", nom: "Fromage ricotta traditionnel 280 ml", specifique: "Ricotta traditionnel", marque: "Tre Stelle", epicerie: "Super C", format: 280, unite: "ml", prix: 5.49, rabais: 4.49, url: "https://www.superc.ca/recherche?filter=fromage+ricotta" },
         { categorie: "ricotta", nom: "Ricotta 400 ml", specifique: "Ricotta", marque: "Irrésistible", epicerie: "Super C", format: 400, unite: "ml", prix: 5.99, url: "https://www.superc.ca/recherche?filter=fromage+ricotta" },
         { categorie: "ricotta", nom: "Ricotta légère 400 ml", specifique: "Ricotta légère", marque: "Mieux-Être", epicerie: "Super C", format: 400, unite: "ml", prix: 5.99, url: "https://www.superc.ca/recherche?filter=fromage+ricotta" },
         { categorie: "ricotta", nom: "Fromage ricotta extra fin 475 ml", specifique: "Ricotta extra fin", marque: "Tre Stelle", epicerie: "Super C", format: 475, unite: "ml", prix: 8.49, url: "https://www.superc.ca/recherche?filter=fromage+ricotta" },
-        
         { categorie: "ricotta", nom: "Ricotta 475 ml", specifique: "Ricotta", marque: "Tre Stelle", epicerie: "Loblaws", format: 475, unite: "ml", prix: 9.49, url: "https://www.loblaws.ca/fr/search?search-bar=persil" },
         { categorie: "ricotta", nom: "Fromage Ricotta 454 ml", specifique: "Ricotta", marque: "Choix du Président", epicerie: "Loblaws", format: 454, unite: "ml", prix: 8.49, url: "https://www.loblaws.ca/fr/search?search-bar=persil" },
         { categorie: "ricotta", nom: "Fromage ricotta extra fin 475 ml", specifique: "Ricotta extra fin", marque: "Tre Stelle", epicerie: "Loblaws", format: 475, unite: "ml", prix: 9.49, url: "https://www.loblaws.ca/fr/search?search-bar=persil" },
@@ -138,224 +156,211 @@
         // PERSIL
         { categorie: "persil", nom: "Persil frisé biologique 1 botte", specifique: "Persil frisé bio", marque: "—", epicerie: "Marché Tau", format: "1 botte", unite: "", prix: 1.99, url: "https://marchestau.com/recherche-produits?qs=persil+frai" },
         { categorie: "persil", nom: "Persil italien biologique 1 botte", specifique: "Persil italien bio", marque: "—", epicerie: "Marché Tau", format: "1 botte", unite: "", prix: 1.99, url: "https://marchestau.com/recherche-produits?qs=persil+frai" },
-        
         { categorie: "persil", nom: "Persil frisé 1 botte", specifique: "Persil frisé", marque: "—", epicerie: "Maxi", format: "1 botte", unite: "", prix: 1.99, url: "https://www.maxi.ca/fr/search?search-bar=Persil+Frais" },
         { categorie: "persil", nom: "Persil italien 1 botte", specifique: "Persil italien", marque: "—", epicerie: "Maxi", format: "1 botte", unite: "", prix: 1.99, url: "https://www.maxi.ca/fr/search?search-bar=Persil+Frais" },
         { categorie: "persil", nom: "Persil frisé en pot 1 plant", specifique: "Persil frisé en pot", marque: "—", epicerie: "Maxi", format: "1 plant", unite: "", prix: 4.99, url: "https://www.maxi.ca/fr/search?search-bar=Persil+Frais" },
         { categorie: "persil", nom: "Persil italien en pot 1 plant", specifique: "Persil italien en pot", marque: "—", epicerie: "Maxi", format: "1 plant", unite: "", prix: 4.99, url: "https://www.maxi.ca/fr/search?search-bar=Persil+Frais" },
-        
         { categorie: "persil", nom: "Persil frisé 1 botte", specifique: "Persil frisé", marque: "—", epicerie: "IGA", format: "1 botte", unite: "", prix: 2.49, url: "https://www.iga.net/fr/search?k=persil%20frais" },
         { categorie: "persil", nom: "Persil italien 1 botte", specifique: "Persil italien", marque: "—", epicerie: "IGA", format: "1 botte", unite: "", prix: 2.49, url: "https://www.iga.net/fr/search?k=persil%20frais" },
         { categorie: "persil", nom: "Persil frisé biologique 1 botte", specifique: "Persil frisé bio", marque: "—", epicerie: "IGA", format: "1 botte", unite: "", prix: 2.99, url: "https://www.iga.net/fr/search?k=persil%20frais" },
         { categorie: "persil", nom: "Persil italien biologique 1 botte", specifique: "Persil italien bio", marque: "—", epicerie: "IGA", format: "1 botte", unite: "", prix: 2.99, url: "https://www.iga.net/fr/search?k=persil%20frais" },
         { categorie: "persil", nom: "Persil frisé frais 1 botte", specifique: "Persil frisé frais", marque: "Serres Coulombe", epicerie: "IGA", format: "1 botte", unite: "", prix: 5.99, url: "https://www.iga.net/fr/search?k=persil%20frais" },
         { categorie: "persil", nom: "Persil italien frais 1 botte", specifique: "Persil italien frais", marque: "Serres Coulombe", epicerie: "IGA", format: "1 botte", unite: "", prix: 5.99, url: "https://www.iga.net/fr/search?k=persil%20frais" },
-        
         { categorie: "persil", nom: "Persil frisé frais 1 botte", specifique: "Persil frisé", marque: "—", epicerie: "Walmart", format: "1 botte", unite: "", prix: 1.97, url: "https://www.walmart.ca/fr/search?q=persil%20frais" },
         { categorie: "persil", nom: "Persil plat frais 1 botte", specifique: "Persil plat", marque: "—", epicerie: "Walmart", format: "1 botte", unite: "", prix: 1.97, url: "https://www.walmart.ca/fr/search?q=persil%20frais" },
-        
         { categorie: "persil", nom: "Persil frisé biologique 1 botte", specifique: "Persil frisé bio", marque: "—", epicerie: "Avril", format: "1 botte", unite: "", prix: 1.99, url: "https://avril.ca/fr/catalogsearch/result/?q=persil" },
         { categorie: "persil", nom: "Persil italien biologique 1 botte", specifique: "Persil italien bio", marque: "—", epicerie: "Avril", format: "1 botte", unite: "", prix: 1.99, url: "https://avril.ca/fr/catalogsearch/result/?q=persil" },
-        
         { categorie: "persil", nom: "Persil frisé 1 botte", specifique: "Persil frisé", marque: "—", epicerie: "Super C", format: "1 botte", unite: "", prix: 1.99, url: "https://www.superc.ca/recherche?filter=persil" },
         { categorie: "persil", nom: "Persil italien frais 1 botte", specifique: "Persil italien", marque: "—", epicerie: "Super C", format: "1 botte", unite: "", prix: 1.99, url: "https://www.superc.ca/recherche?filter=persil" },
-        
         { categorie: "persil", nom: "Persil frisé 1 botte", specifique: "Persil frisé", marque: "—", epicerie: "Loblaws", format: "1 botte", unite: "", prix: 2.50, url: "https://www.loblaws.ca/fr/search?search-bar=Persil+Frais" },
         { categorie: "persil", nom: "Persil italien 1 botte", specifique: "Persil italien", marque: "—", epicerie: "Loblaws", format: "1 botte", unite: "", prix: 2.50, url: "https://www.loblaws.ca/fr/search?search-bar=Persil+Frais" },
         
         // BAVETTE
         { categorie: "bavette", nom: "Bavette de bœuf bio 170 g", specifique: "Bavette bio", marque: "Beretta", epicerie: "Marché Tau", format: 170, unite: "g", prix: 14.99, url: "https://marchestau.com/recherche-produits?qs=Bavette+de+b%C5%93uf" },
-        
         { categorie: "bavette", nom: "Bavette de bœuf assaisonnée ail et fines herbes 225 g", specifique: "Bavette assaisonnée", marque: "Houston Avenue Bar & Grill", epicerie: "Maxi", format: 225, unite: "g", prix: 12.00, url: "https://www.maxi.ca/fr/search?search-bar=Bavette+De+Boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf assaisonnée saveur steakhouse 225 g", specifique: "Bavette steakhouse", marque: "Houston Avenue Bar & Grill", epicerie: "Maxi", format: 225, unite: "g", prix: 12.00, url: "https://www.maxi.ca/fr/search?search-bar=Bavette+De+Boeuf" },
-        
         { categorie: "bavette", nom: "Bavette de bœuf marinée ~350 g", specifique: "Bavette marinée", marque: "Top Gourmet", epicerie: "IGA", format: 350, unite: "g", prix: 20.65, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf AAA 255 g", specifique: "Bavette AAA", marque: "Famille Fontaine", epicerie: "IGA", format: 255, unite: "g", prix: 18.49, rabais: 17.99, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf ~350 g", specifique: "Bavette", marque: "8 Acres", epicerie: "IGA", format: 350, unite: "g", prix: 24.50, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf 300 g (2×150 g)", specifique: "Bavette", marque: "Bâton Rouge", epicerie: "IGA", format: 300, unite: "g", prix: 18.99, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf ~350 g", specifique: "Bavette", marque: "Sterling Silver", epicerie: "IGA", format: 350, unite: "g", prix: 22.75, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
         { categorie: "bavette", nom: "Bavette de bœuf Dijon ~350 g", specifique: "Bavette Dijon", marque: "Sterling Silver", epicerie: "IGA", format: 350, unite: "g", prix: 25.72, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
-{ categorie: "bavette", nom: "Bavette de bœuf 3 poivres ~350 g", specifique: "Bavette 3 poivres", marque: "Sterling Silver", epicerie: "IGA", format: 350, unite: "g", prix: 25.72, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
-{ categorie: "bavette", nom: "Bavette de bœuf truffe ~250 g", specifique: "Bavette truffe", marque: "Sterling Silver", epicerie: "IGA", format: 250, unite: "g", prix: 18.37, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
-{ categorie: "bavette", nom: "Bavette de bœuf à la parisienne ~350 g", specifique: "Bavette parisienne", marque: "Les Prêts-à-cuire du Boucher", epicerie: "IGA", format: 350, unite: "g", prix: 25.72, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
-{ categorie: "bavette", nom: "Bavette de bœuf biologique ~350 g", specifique: "Bavette bio", marque: "8 Acres", epicerie: "IGA", format: 350, unite: "g", prix: 16.10, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
-{ categorie: "bavette", nom: "Bavette de bœuf nourri à l'herbe 227 g", specifique: "Bavette herbe", marque: "8 Acres", epicerie: "IGA", format: 227, unite: "g", prix: 18.99, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },{ categorie: "bavette", nom: "Bavette de bœuf aux épices steakhouse 225 g", specifique: "Bavette steakhouse", marque: "Irrésistible", epicerie: "Super C", format: 225, unite: "g", prix: 11.99, url: "https://www.superc.ca/recherche?filter=bavette%20de%20boeuf" },
-    { categorie: "bavette", nom: "Bavette de bœuf au vin blanc et échalotes 225 g", specifique: "Bavette vin blanc", marque: "Irrésistible", epicerie: "Super C", format: 225, unite: "g", prix: 11.99, url: "https://www.superc.ca/recherche?filter=bavette%20de%20boeuf" },
-    
-    // HUILE
-    { categorie: "huile", nom: "Huile végétale pure à 100% 946 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Maxi", format: 946, unite: "ml", prix: 4.00, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale pure à 100% 3000 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Maxi", format: 3000, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Maxi", format: 3000, unite: "ml", prix: 6.88, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Maxi", format: 1180, unite: "ml", prix: 8.79, rabais: 8.00, finRabais: "2026-01-28", url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
-    
-    { categorie: "huile", nom: "Huile végétale 946 ml", specifique: "Huile végétale", marque: "Compliments", epicerie: "IGA", format: 946, unite: "ml", prix: 7.49, rabais: 6.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Compliments", epicerie: "IGA", format: 3000, unite: "ml", prix: 11.29, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "IGA", format: 3000, unite: "ml", prix: 15.79, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "IGA", format: 1180, unite: "ml", prix: 9.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
-    { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "IGA", format: 2840, unite: "ml", prix: 17.29, rabais: 15.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
-    
-    { categorie: "huile", nom: "Huile végétale 1000 ml", specifique: "Huile végétale", marque: "Great Value", epicerie: "Walmart", format: 1000, unite: "ml", prix: 3.98, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    { categorie: "huile", nom: "Huile végétale 5000 ml", specifique: "Huile végétale", marque: "Great Value", epicerie: "Walmart", format: 5000, unite: "ml", prix: 12.97, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Walmart", format: 1180, unite: "ml", prix: 8.77, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Walmart", format: 2840, unite: "ml", prix: 12.96, rabais: 7.97, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    { categorie: "huile", nom: "Huile végétale 16000 ml", specifique: "Huile végétale", marque: "Capri", epicerie: "Walmart", format: 16000, unite: "ml", prix: 40.59, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    { categorie: "huile", nom: "Huile végétale 16000 ml", specifique: "Huile végétale", marque: "Saporito", epicerie: "Walmart", format: 16000, unite: "ml", prix: 41.98, url: "https://www.walmart.ca/fr/search?q=beurre" },
-    
-    { categorie: "huile", nom: "Huile végétale 946 ml", specifique: "Huile végétale", marque: "Selection", epicerie: "Super C", format: 946, unite: "ml", prix: 4.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Selection", epicerie: "Super C", format: 3000, unite: "ml", prix: 7.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Super C", format: 3000, unite: "ml", prix: 10.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
-    { categorie: "huile", nom: "Huile végétale pure 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Super C", format: 1180, unite: "ml", prix: 8.49, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
-    
-    { categorie: "huile", nom: "Huile végétale pure à 100% 946 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Loblaws", format: 946, unite: "ml", prix: 6.50, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale pure à 100% 3000 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 11.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 14.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Saporito", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 13.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Loblaws", format: 1180, unite: "ml", prix: 10.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Loblaws", format: 2840, unite: "ml", prix: 17.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-    { categorie: "huile", nom: "Huile végétale (soja) 1180 ml", specifique: "Huile végétale soja", marque: "Crisco", epicerie: "Loblaws", format: 1180, unite: "ml", prix: 10.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
-];
-
-// Theme Toggle
-const themeBtn = document.getElementById('themeToggle');
-const html = document.documentElement;
-
-if(localStorage.getItem('theme') === 'dark') {
-    html.classList.add('dark');
-    themeBtn.textContent = '☀️';
-}
-
-themeBtn.addEventListener('click', () => {
-    html.classList.toggle('dark');
-    const isDark = html.classList.contains('dark');
-    themeBtn.textContent = isDark ? '☀️' : '🌙';
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-});
-
-// Store Badges
-function getStoreBadge(epicerie) {
-    const badges = {
-        'Maxi': 'bg-yellow-300 text-slate-900 border-yellow-400',
-        'IGA': 'bg-red-50 text-red-700 border-red-200',
-        'Walmart': 'bg-blue-50 text-blue-700 border-blue-200',
-        'Super C': 'bg-orange-50 text-orange-700 border-orange-200',
-        'Loblaws': 'bg-slate-900 text-white border-slate-800',
-        'Marché Tau': 'bg-green-50 text-green-700 border-green-200',
-        'Avril': 'bg-purple-50 text-purple-700 border-purple-200'
-    };
-    const color = badges[epicerie] || 'bg-gray-200 text-gray-700 border-gray-300';
-    return `<span class="inline-block px-2 py-1 rounded-full text-xs font-bold uppercase border ${color}">${epicerie}</span>`;
-}
-
-// Copy Function
-async function copyText(text, btn) {
-    try {
-        await navigator.clipboard.writeText(text);
-        showToast();
-        btn.classList.add('text-green-500', 'font-bold');
-        setTimeout(() => btn.classList.remove('text-green-500', 'font-bold'), 600);
-    } catch(e) { console.error(e); }
-}
-
-function showToast() {
-    const toast = document.getElementById('toast');
-    toast.classList.remove('opacity-0', 'invisible');
-    toast.classList.add('opacity-100', 'visible');
-    setTimeout(() => {
-        toast.classList.add('opacity-0', 'invisible');
-        toast.classList.remove('opacity-100', 'visible');
-    }, 2000);
-}
-
-// Render Table
-let currentCategory = 'all';
-const tableBody = document.getElementById('tableBody');
-const searchInput = document.getElementById('searchInput');
-
-function renderTable(searchTerm = '') {
-    const lowerSearch = searchTerm.toLowerCase();
-    
-    const filtered = rawData.filter(item => {
-        const matchCategory = currentCategory === 'all' || item.categorie === currentCategory;
-        const matchSearch = item.nom.toLowerCase().includes(lowerSearch) ||
-                           item.marque.toLowerCase().includes(lowerSearch) ||
-                           item.epicerie.toLowerCase().includes(lowerSearch) ||
-                           item.specifique.toLowerCase().includes(lowerSearch);
-        return matchCategory && matchSearch;
-    });
-
-    tableBody.innerHTML = '';
-    
-    filtered.forEach(item => {
-        const formatDisplay = item.unite ? `${item.format} ${item.unite}` : item.format;
-        const rabaisDisplay = item.rabais ? `<span class="text-red-600 dark:text-red-400 font-bold">$${item.rabais.toFixed(2)}</span>` : '-';
-        const dateDisplay = item.finRabais ? item.finRabais : '-';
+        { categorie: "bavette", nom: "Bavette de bœuf 3 poivres ~350 g", specifique: "Bavette 3 poivres", marque: "Sterling Silver", epicerie: "IGA", format: 350, unite: "g", prix: 25.72, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf truffe ~250 g", specifique: "Bavette truffe", marque: "Sterling Silver", epicerie: "IGA", format: 250, unite: "g", prix: 18.37, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf à la parisienne ~350 g", specifique: "Bavette parisienne", marque: "Les Prêts-à-cuire du Boucher", epicerie: "IGA", format: 350, unite: "g", prix: 25.72, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf biologique ~350 g", specifique: "Bavette bio", marque: "8 Acres", epicerie: "IGA", format: 350, unite: "g", prix: 16.10, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf nourri à l'herbe 227 g", specifique: "Bavette herbe", marque: "8 Acres", epicerie: "IGA", format: 227, unite: "g", prix: 18.99, url: "https://www.iga.net/fr/search?k=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf aux épices steakhouse 225 g", specifique: "Bavette steakhouse", marque: "Irrésistible", epicerie: "Super C", format: 225, unite: "g", prix: 11.99, url: "https://www.superc.ca/recherche?filter=bavette%20de%20boeuf" },
+        { categorie: "bavette", nom: "Bavette de bœuf au vin blanc et échalotes 225 g", specifique: "Bavette vin blanc", marque: "Irrésistible", epicerie: "Super C", format: 225, unite: "g", prix: 11.99, url: "https://www.superc.ca/recherche?filter=bavette%20de%20boeuf" },
         
-        const row = document.createElement('tr');
-        row.className = 'hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors';
-        row.innerHTML = `
-            <td class="px-4 py-3 text-sm">
-                <div class="flex items-center justify-between gap-2 group">
-                    <span>${item.nom}</span>
-                    <button onclick='copyText("${item.nom.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier">📋</button>
-                </div>
-            </td>
-            <td class="px-4 py-3 text-sm">
-                <div class="flex items-center justify-between gap-2 group">
-                    <span>${item.specifique}</span>
-                    <button onclick='copyText("${item.specifique.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier">📋</button>
-                </div>
-            </td>
-            <td class="px-4 py-3 text-sm">
-                <div class="flex items-center justify-between gap-2 group">
-                    <span>${item.marque}</span>
-                    <button onclick='copyText("${item.marque.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier">📋</button>
-                </div>
-            </td>
-            <td class="px-4 py-3">${getStoreBadge(item.epicerie)}</td>
-            <td class="px-4 py-3 text-sm">
-                <div class="flex items-center justify-between gap-2 group">
-                    <span>${formatDisplay}</span>
-                    <button onclick='copyText("${formatDisplay}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier">📋</button>
-                </div>
-            </td>
-            <td class="px-4 py-3 font-semibold text-sm">$${item.prix.toFixed(2)}</td>
-            <td class="px-4 py-3 text-sm">${rabaisDisplay}</td>
-            <td class="px-4 py-3 text-sm">${dateDisplay}</td>
-            <td class="px-4 py-3">
-                <div class="flex items-center gap-2">
-                    <a href="${item.url}" target="_blank" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-xs underline truncate max-w-[120px]" title="${item.url}">Voir</a>
-                    <button onclick='copyText("${item.url}",this)' class="text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier lien">📋</button>
-                </div>
-            </td>
-        `;
-        tableBody.appendChild(row);
+        // HUILE
+        { categorie: "huile", nom: "Huile végétale pure à 100% 946 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Maxi", format: 946, unite: "ml", prix: 4.00, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale pure à 100% 3000 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Maxi", format: 3000, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Maxi", format: 3000, unite: "ml", prix: 6.88, url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Maxi", format: 1180, unite: "ml", prix: 8.79, rabais: 8.00, finRabais: "2026-01-28", url: "https://www.maxi.ca/fr/search?search-bar=Huile+v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 946 ml", specifique: "Huile végétale", marque: "Compliments", epicerie: "IGA", format: 946, unite: "ml", prix: 7.49, rabais: 6.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Compliments", epicerie: "IGA", format: 3000, unite: "ml", prix: 11.29, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "IGA", format: 3000, unite: "ml", prix: 15.79, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "IGA", format: 1180, unite: "ml", prix: 9.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "IGA", format: 2840, unite: "ml", prix: 17.29, rabais: 15.49, url: "https://www.iga.net/fr/search?t={14A91276-40BA-49D5-940D-3692DE3DC381}&k=Huile%20v%C3%A9g%C3%A9tale" },
+        { categorie: "huile", nom: "Huile végétale 1000 ml", specifique: "Huile végétale", marque: "Great Value", epicerie: "Walmart", format: 1000, unite: "ml", prix: 3.98, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 5000 ml", specifique: "Huile végétale", marque: "Great Value", epicerie: "Walmart", format: 5000, unite: "ml", prix: 12.97, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Walmart", format: 1180, unite: "ml", prix: 8.77, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Walmart", format: 2840, unite: "ml", prix: 12.96, rabais: 7.97, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 16000 ml", specifique: "Huile végétale", marque: "Capri", epicerie: "Walmart", format: 16000, unite: "ml", prix: 40.59, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 16000 ml", specifique: "Huile végétale", marque: "Saporito", epicerie: "Walmart", format: 16000, unite: "ml", prix: 41.98, url: "https://www.walmart.ca/fr/search?q=beurre" },
+        { categorie: "huile", nom: "Huile végétale 946 ml", specifique: "Huile végétale", marque: "Selection", epicerie: "Super C", format: 946, unite: "ml", prix: 4.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Selection", epicerie: "Super C", format: 3000, unite: "ml", prix: 7.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Super C", format: 3000, unite: "ml", prix: 10.99, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
+        { categorie: "huile", nom: "Huile végétale pure 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Super C", format: 1180, unite: "ml", prix: 8.49, url: "https://www.superc.ca/recherche?freeText=true&filter=beurre" },
+        { categorie: "huile", nom: "Huile végétale pure à 100% 946 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Loblaws", format: 946, unite: "ml", prix: 6.50, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale pure à 100% 3000 ml", specifique: "Huile végétale", marque: "Sans Nom", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 11.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Unico", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 14.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale 3000 ml", specifique: "Huile végétale", marque: "Saporito", epicerie: "Loblaws", format: 3000, unite: "ml", prix: 13.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale 1180 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Loblaws", format: 1180, unite: "ml", prix: 10.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale 2840 ml", specifique: "Huile végétale", marque: "Mazola", epicerie: "Loblaws", format: 2840, unite: "ml", prix: 17.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+        { categorie: "huile", nom: "Huile végétale (soja) 1180 ml", specifique: "Huile végétale soja", marque: "Crisco", epicerie: "Loblaws", format: 1180, unite: "ml", prix: 10.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
+    ];
+
+    // Theme Toggle Logic
+    const themeBtn = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    if(localStorage.getItem('theme') === 'dark') {
+        html.classList.add('dark');
+        themeBtn.textContent = '☀️';
+    }
+
+    themeBtn.addEventListener('click', () => {
+        html.classList.toggle('dark');
+        const isDark = html.classList.contains('dark');
+        themeBtn.textContent = isDark ? '☀️' : '🌙';
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
-}
 
-// Filter by Category
-window.filterByCategory = function(cat) {
-    currentCategory = cat;
-    
-    // Update button styles
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-500', 'text-white');
-        btn.classList.add('bg-gray-200', 'dark:bg-slate-700', 'text-gray-700', 'dark:text-slate-300');
-    });
-    
-    event.target.classList.remove('bg-gray-200', 'dark:bg-slate-700', 'text-gray-700', 'dark:text-slate-300');
-    event.target.classList.add('bg-blue-500', 'text-white');
-    
-    renderTable(searchInput.value);
-};
+    // Store Badges
+    function getStoreBadge(epicerie) {
+        const badges = {
+            'Maxi': 'bg-yellow-300 text-slate-900 border-yellow-400',
+            'IGA': 'bg-red-50 text-red-700 border-red-200',
+            'Walmart': 'bg-blue-50 text-blue-700 border-blue-200',
+            'Super C': 'bg-orange-50 text-orange-700 border-orange-200',
+            'Loblaws': 'bg-slate-900 text-white border-slate-800',
+            'Marché Tau': 'bg-green-50 text-green-700 border-green-200',
+            'Avril': 'bg-purple-50 text-purple-700 border-purple-200'
+        };
+        const color = badges[epicerie] || 'bg-gray-200 text-gray-700 border-gray-300';
+        return `<span class="inline-block px-2 py-1 rounded-full text-xs font-bold uppercase border ${color}">${epicerie}</span>`;
+    }
 
-// Search
-searchInput.addEventListener('input', (e) => renderTable(e.target.value));
+    // Reveal URL Function (De la versión antigua)
+    window.revealUrl = function(btn, url) {
+        const container = btn.closest('.url-box-container');
+        container.innerHTML = `<input type="text" class="url-input" value="${url}" readonly onfocus="this.select()">`;
+    };
 
-// Make copyText global
-window.copyText = copyText;
+    // Copy Function
+    async function copyText(text, btn) {
+        try {
+            await navigator.clipboard.writeText(text);
+            showToast();
+            btn.classList.add('text-green-500', 'font-bold');
+            setTimeout(() => btn.classList.remove('text-green-500', 'font-bold'), 600);
+        } catch(e) { console.error(e); }
+    }
 
-// Initial render
-renderTable();
+    function showToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.remove('opacity-0', 'invisible');
+        toast.classList.add('opacity-100', 'visible');
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'invisible');
+            toast.classList.remove('opacity-100', 'visible');
+        }, 2000);
+    }
+
+    // Render Table
+    let currentCategory = 'all';
+    const tableBody = document.getElementById('tableBody');
+    const searchInput = document.getElementById('searchInput');
+
+    function renderTable(searchTerm = '') {
+        const lowerSearch = searchTerm.toLowerCase();
+        
+        const filtered = rawData.filter(item => {
+            const matchCategory = currentCategory === 'all' || item.categorie === currentCategory;
+            const matchSearch = item.nom.toLowerCase().includes(lowerSearch) ||
+                               item.marque.toLowerCase().includes(lowerSearch) ||
+                               item.epicerie.toLowerCase().includes(lowerSearch) ||
+                               item.specifique.toLowerCase().includes(lowerSearch);
+            return matchCategory && matchSearch;
+        });
+
+        tableBody.innerHTML = '';
+        
+        filtered.forEach(item => {
+            const formatDisplay = item.unite ? `${item.format} ${item.unite}` : item.format;
+            const rabaisDisplay = item.rabais ? `<span class="text-red-600 dark:text-red-400 font-bold">$${item.rabais.toFixed(2)}</span>` : '-';
+            const dateDisplay = item.finRabais ? item.finRabais : '-';
+            
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-gray-50 dark:hover:bg-slate-700/50 transition-colors';
+            row.innerHTML = `
+                <td class="px-4 py-3 text-sm">
+                    <div class="flex items-center justify-between gap-2 group">
+                        <span>${item.nom}</span>
+                        <button onclick='copyText("${item.nom.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-sm">
+                    <div class="flex items-center justify-between gap-2 group">
+                        <span>${item.specifique}</span>
+                        <button onclick='copyText("${item.specifique.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                    </div>
+                </td>
+                <td class="px-4 py-3 text-sm">
+                    <div class="flex items-center justify-between gap-2 group">
+                        <span>${item.marque}</span>
+                        <button onclick='copyText("${item.marque.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                    </div>
+                </td>
+                <td class="px-4 py-3">${getStoreBadge(item.epicerie)}</td>
+                <td class="px-4 py-3 text-sm">${formatDisplay}</td>
+                <td class="px-4 py-3 font-semibold text-sm">$${item.prix.toFixed(2)}</td>
+                <td class="px-4 py-3 text-sm">${rabaisDisplay}</td>
+                <td class="px-4 py-3 text-sm">${dateDisplay}</td>
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <div class="url-box-container flex items-center gap-2 min-w-[140px]">
+                            <span class="url-hidden">${item.url}</span>
+                            <button onclick="revealUrl(this, '${item.url}')" class="text-gray-500 hover:text-blue-500 transition-all p-1" title="Voir lien">👁️</button>
+                        </div>
+                        <button onclick='copyText("${item.url}",this)' class="text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier lien">📋</button>
+                        <a href="${item.url}" target="_blank" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 text-xs font-bold">GO</a>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Filter by Category
+    window.filterByCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('bg-blue-500', 'text-white');
+            btn.classList.add('bg-gray-200', 'dark:bg-slate-700', 'text-gray-700', 'dark:text-slate-300');
+        });
+        event.target.classList.remove('bg-gray-200', 'dark:bg-slate-700', 'text-gray-700', 'dark:text-slate-300');
+        event.target.classList.add('bg-blue-500', 'text-white');
+        renderTable(searchInput.value);
+    };
+
+    // Search
+    searchInput.addEventListener('input', (e) => renderTable(e.target.value));
+
+    // Initial render
+    renderTable();
 </script>
 </body>
 </html>
