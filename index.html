@@ -22,7 +22,6 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         
-        /* Estilos para la funcionalidad del Ojo (URL) */
         .url-input {
             width: 100%;
             background: #f1f5f9;
@@ -63,6 +62,12 @@
             🌙
         </button>
     </header>
+
+    <div class="max-w-4xl mx-auto mb-8 px-5 py-4 bg-slate-100 dark:bg-slate-800 border-l-4 border-slate-400 dark:border-blue-500 rounded-r-lg shadow-sm">
+    <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+        <strong>Note importante :</strong> Les liens fournis redirigent vers une recherche générale et non vers une fiche produit spécifique. Cette mesure est <strong>intentionnelle</strong> : elle oblige la personne transférant les données vers Google Sheets à vérifier systématiquement chaque information pour extraire l'URL individuelle réelle. Ce passage obligatoire par le produit exact garantit une révision rigoureuse et prévient les erreurs qui pourraient survenir si l'accès direct aux liens simplifiait trop la tâche au détriment de la précision.
+    </p>
+</div>
     
     <div class="relative max-w-2xl mx-auto mb-8">
         <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-slate-400 text-xl">🔍</span>
@@ -110,13 +115,15 @@
     </div>
 </div>
 
-<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 px-6 py-3 rounded-full shadow-2xl opacity-0 invisible transition-all duration-300 flex items-center gap-3 z-50">
-    <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-xs font-bold">✓</div>
-    <span class="font-semibold">Copié !</span>
+<div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-slate-100 px-6 py-3 rounded-full shadow-2xl opacity-0 invisible transition-all duration-300 transform translate-y-4 flex items-center gap-3 z-50 border border-slate-700">
+    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    </svg>
+    <span class="text-sm font-medium tracking-wide">Donnée copiée</span>
 </div>
 
 <script>
-    // Se conservan todos los datos originales del archivo index.html
+    // Los datos se mantienen iguales
     const rawData = [
         // RICOTTA
         { categorie: "ricotta", nom: "Ricotta 475 ml", specifique: "Ricotta", marque: "Tre Stelle", epicerie: "Maxi", format: 475, unite: "ml", prix: 9.00, url: "https://www.maxi.ca/fr/search?search-bar=fromage+ricotta" },
@@ -222,7 +229,6 @@
         { categorie: "huile", nom: "Huile végétale (soja) 1180 ml", specifique: "Huile végétale soja", marque: "Crisco", epicerie: "Loblaws", format: 1180, unite: "ml", prix: 10.00, url: "https://www.loblaws.ca/fr/search?search-bar=beurre" },
     ];
 
-    // Theme Toggle Logic
     const themeBtn = document.getElementById('themeToggle');
     const html = document.documentElement;
 
@@ -238,7 +244,6 @@
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
     });
 
-    // Store Badges
     function getStoreBadge(epicerie) {
         const badges = {
             'Maxi': 'bg-yellow-300 text-slate-900 border-yellow-400',
@@ -253,33 +258,30 @@
         return `<span class="inline-block px-2 py-1 rounded-full text-xs font-bold uppercase border ${color}">${epicerie}</span>`;
     }
 
-    // Reveal URL Function (De la versión antigua)
     window.revealUrl = function(btn, url) {
         const container = btn.closest('.url-box-container');
         container.innerHTML = `<input type="text" class="url-input" value="${url}" readonly onfocus="this.select()">`;
     };
 
-    // Copy Function
     async function copyText(text, btn) {
         try {
             await navigator.clipboard.writeText(text);
             showToast();
-            btn.classList.add('text-green-500', 'font-bold');
-            setTimeout(() => btn.classList.remove('text-green-500', 'font-bold'), 600);
+            btn.classList.add('text-green-500', 'scale-125');
+            setTimeout(() => btn.classList.remove('text-green-500', 'scale-125'), 600);
         } catch(e) { console.error(e); }
     }
 
     function showToast() {
         const toast = document.getElementById('toast');
-        toast.classList.remove('opacity-0', 'invisible');
-        toast.classList.add('opacity-100', 'visible');
+        toast.classList.remove('opacity-0', 'invisible', 'translate-y-4');
+        toast.classList.add('opacity-100', 'visible', 'translate-y-0');
         setTimeout(() => {
-            toast.classList.add('opacity-0', 'invisible');
-            toast.classList.remove('opacity-100', 'visible');
-        }, 2000);
+            toast.classList.add('opacity-0', 'invisible', 'translate-y-4');
+            toast.classList.remove('opacity-100', 'visible', 'translate-y-0');
+        }, 2500);
     }
 
-    // Render Table
     let currentCategory = 'all';
     const tableBody = document.getElementById('tableBody');
     const searchInput = document.getElementById('searchInput');
@@ -309,19 +311,19 @@
                 <td class="px-4 py-3 text-sm">
                     <div class="flex items-center justify-between gap-2 group">
                         <span>${item.nom}</span>
-                        <button onclick='copyText("${item.nom.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                        <button onclick='copyText("${item.nom.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-all p-1">📋</button>
                     </div>
                 </td>
                 <td class="px-4 py-3 text-sm">
                     <div class="flex items-center justify-between gap-2 group">
                         <span>${item.specifique}</span>
-                        <button onclick='copyText("${item.specifique.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                        <button onclick='copyText("${item.specifique.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-all p-1">📋</button>
                     </div>
                 </td>
                 <td class="px-4 py-3 text-sm">
                     <div class="flex items-center justify-between gap-2 group">
                         <span>${item.marque}</span>
-                        <button onclick='copyText("${item.marque.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-500 hover:text-blue-500 transition-all p-1">📋</button>
+                        <button onclick='copyText("${item.marque.replace(/'/g, "\\'")}",this)' class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-500 transition-all p-1">📋</button>
                     </div>
                 </td>
                 <td class="px-4 py-3">${getStoreBadge(item.epicerie)}</td>
@@ -333,9 +335,9 @@
                     <div class="flex items-center gap-2">
                         <div class="url-box-container flex items-center gap-2 min-w-[140px]">
                             <span class="url-hidden">${item.url}</span>
-                            <button onclick="revealUrl(this, '${item.url}')" class="text-gray-500 hover:text-blue-500 transition-all p-1" title="Voir lien">👁️</button>
+                            <button onclick="revealUrl(this, '${item.url}')" class="text-gray-400 hover:text-blue-500 transition-all p-1" title="Voir lien">👁️</button>
                         </div>
-                        <button onclick='copyText("${item.url}",this)' class="text-gray-500 hover:text-blue-500 transition-all p-1" title="Copier lien">📋</button>
+                        <button onclick='copyText("${item.url}",this)' class="text-gray-400 hover:text-blue-500 transition-all p-1" title="Copier lien">📋</button>
                         <a href="${item.url}" target="_blank" class="text-blue-500 hover:text-blue-700 dark:text-blue-400 text-xs font-bold">GO</a>
                     </div>
                 </td>
@@ -344,7 +346,6 @@
         });
     }
 
-    // Filter by Category
     window.filterByCategory = function(cat) {
         currentCategory = cat;
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -356,10 +357,8 @@
         renderTable(searchInput.value);
     };
 
-    // Search
     searchInput.addEventListener('input', (e) => renderTable(e.target.value));
 
-    // Initial render
     renderTable();
 </script>
 </body>
