@@ -1333,34 +1333,29 @@ function closeVideoModal() {
   }, 300);
 }
 
-// ==================================================
-// INICIALIZACIÓN
-// ==================================================
 document.addEventListener('DOMContentLoaded', function() {
-  // Verificar si hay un tenis compartido en la URL
+  // Detectar si viene de enlace compartido
   const urlParams = new URLSearchParams(window.location.search);
-  const sharedSneakerId = urlParams.get('sneaker');
+  const shareParam = urlParams.get('share');
   
-  if (sharedSneakerId) {
-    // Si viene de enlace compartido, ocultar preloader inmediatamente
+  if (shareParam) {
+    // Ocultar preloader inmediatamente
     const preloader = document.getElementById('preloader');
     if (preloader) {
       preloader.style.display = 'none';
     }
     
-    // Mostrar modal del tenis compartido con animación
-    showSharedSneakerModal(sharedSneakerId);
-  } else {
-    // Comportamiento normal del preloader solo si NO es enlace compartido
-    setTimeout(() => {
-      const preloader = document.getElementById('preloader');
-      if (preloader) {
-        preloader.style.opacity = '0';
-        setTimeout(() => {
-          preloader.style.display = 'none';
-        }, 700);
+    // Extraer ID y color del parámetro (formato: "5-2")
+    const [productId, colorIndex] = shareParam.split('-').map(Number);
+    const product = productsData.find(p => p.id === productId);
+    
+    if (product && colorIndex) {
+      const colorData = product.colors.find(c => c.index === colorIndex);
+      if (colorData) {
+        // Mostrar el modal del tenis compartido
+        mostrarPreviewElegante(product, colorData.color, colorIndex);
       }
-    }, 2000);
+    }
   }
   
   renderProducts();
@@ -1494,81 +1489,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-// ==================================================
-// MODAL DE TENIS COMPARTIDO
-// ==================================================
-let sharedSneakerData = null;
-
-function showSharedSneakerModal(sneakerId) {
-  const product = productsData.find(p => p.id === parseInt(sneakerId));
-  if (!product) return;
-  
-  sharedSneakerData = product;
-  
-  const modal = document.getElementById('sharedSneakerModal');
-  const content = document.getElementById('sharedSneakerContent');
-  const infoDiv = document.getElementById('sharedSneakerInfo');
-  
-  // Llenar información del tenis
-  infoDiv.innerHTML = `
-    <div class="flex items-center gap-4 mb-4">
-      <img src="tenis/tenis${product.id}-1.png" alt="${product.name}" 
-           class="w-24 h-24 object-contain animate-float">
-      <div>
-        <h4 class="text-white font-header text-xl uppercase">${product.name}</h4>
-        <p class="text-nike-red font-bold text-2xl">$${product.price}</p>
-      </div>
-    </div>
-    <div class="flex gap-2 flex-wrap">
-      ${product.colors.map(c => `
-        <div class="w-8 h-8 rounded-full border-2 border-white/20 ${c.class || ''}" 
-             style="${c.hex ? `background-color: ${c.hex}` : ''}"
-             title="${c.color}">
-        </div>
-      `).join('')}
-    </div>
-  `;
-  
-  // Mostrar modal con animación
-  modal.classList.remove('hidden');
-  setTimeout(() => {
-    content.classList.remove('scale-0', 'opacity-0');
-    content.classList.add('scale-100', 'opacity-100');
-  }, 50);
-}
-
-function closeSharedSneakerModal() {
-  const modal = document.getElementById('sharedSneakerModal');
-  const content = document.getElementById('sharedSneakerContent');
-  
-  content.classList.remove('scale-100', 'opacity-100');
-  content.classList.add('scale-0', 'opacity-0');
-  
-  setTimeout(() => {
-    modal.classList.add('hidden');
-    // Limpiar URL sin recargar la página
-    window.history.replaceState({}, document.title, window.location.pathname);
-  }, 500);
-}
-
-function goToSharedSneaker() {
-  closeSharedSneakerModal();
-  
-  // Scroll suave al producto
-  setTimeout(() => {
-    const productCard = document.querySelector(`[data-product-id="${sharedSneakerData.id}"]`);
-    if (productCard) {
-      productCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      // Efecto de resaltado
-      productCard.style.boxShadow = '0 0 40px rgba(239, 62, 66, 0.6)';
-      productCard.style.transform = 'scale(1.02)';
-      
-      setTimeout(() => {
-        productCard.style.boxShadow = '';
-        productCard.style.transform = '';
-      }, 2000);
-    }
-  }, 600);
-}
