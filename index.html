@@ -245,7 +245,38 @@ tailwind.config = {
 
   <style>#preloader{position:fixed;inset:0;background:#0a0a0a;z-index:99999;display:flex;align-items:center;justify-content:center;transition:all .8s cubic-bezier(.86,0,.07,1)}#preloader.zoom-out{transform:scale(3);opacity:0}.background-pattern{position:absolute;inset:0;background-image:linear-gradient(rgba(239,62,66,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(239,62,66,.03) 1px,transparent 1px);background-size:50px 50px;animation:patternMove 20s linear infinite}@keyframes patternMove{0%{background-position:0 0}100%{background-position:50px 50px}}.center-content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center}.logo-circle{width:180px;height:180px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a 0%,#0f0f0f 100%);border:2px solid rgba(239,62,66,.3);display:flex;align-items:center;justify-content:center;position:relative;animation:circleGrow 1s cubic-bezier(.34,1.56,.64,1);box-shadow:0 0 40px rgba(239,62,66,.3),inset 0 0 30px rgba(239,62,66,.1)}@keyframes circleGrow{0%{transform:scale(0) rotate(0);opacity:0}100%{transform:scale(1) rotate(360deg);opacity:1}}.logo-circle::before{content:'';position:absolute;inset:-3px;border-radius:50%;background:linear-gradient(45deg,#ef3e42,transparent,#ef3e42);animation:rotateBorder 3s linear infinite;z-index:-1;opacity:.6}@keyframes rotateBorder{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}.logo-circle img{width:100px;height:auto;filter:drop-shadow(0 10px 25px rgba(239,62,66,.4));animation:logoSpin 2s ease-in-out infinite alternate}@keyframes logoSpin{0%{transform:rotate(-5deg) scale(1)}100%{transform:rotate(5deg) scale(1.05)}}.loading-rings{margin-top:-90px;position:relative;width:180px;height:180px}.ring{position:absolute;border:2px solid transparent;border-top-color:#ef3e42;border-radius:50%;animation:spinRing 1.5s linear infinite}.ring-1{inset:0;animation-duration:1.5s}.ring-2{inset:10px;animation-duration:2s;animation-direction:reverse;border-top-color:rgba(239,62,66,.6)}.ring-3{inset:20px;animation-duration:2.5s;border-top-color:rgba(239,62,66,.3)}@keyframes spinRing{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}.status-text{margin-top:120px;text-align:center}.main-status{color:#fff;font-size:16px;font-weight:800;letter-spacing:4px;text-transform:uppercase;font-family:'Arial',sans-serif;margin-bottom:10px;animation:textPulse 2s ease-in-out infinite}@keyframes textPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(.98)}}.sub-status{color:rgba(255,255,255,.3);font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:'Arial',sans-serif}.progress-percentage{margin-top:20px;color:#ef3e42;font-size:36px;font-weight:900;font-family:'Arial',sans-serif;animation:countUp 2.5s ease-out}@keyframes countUp{0%{opacity:0;transform:translateY(20px)}100%{opacity:1;transform:translateY(0)}}.corner-accent{position:absolute;width:60px;height:60px;border:2px solid rgba(239,62,66,.3)}.corner-accent.top-left{top:40px;left:40px;border-right:none;border-bottom:none;animation:cornerGlow 2s ease-in-out infinite}.corner-accent.top-right{top:40px;right:40px;border-left:none;border-bottom:none;animation:cornerGlow 2s ease-in-out infinite .5s}.corner-accent.bottom-left{bottom:40px;left:40px;border-right:none;border-top:none;animation:cornerGlow 2s ease-in-out infinite 1s}.corner-accent.bottom-right{bottom:40px;right:40px;border-left:none;border-top:none;animation:cornerGlow 2s ease-in-out infinite 1.5s}@keyframes cornerGlow{0%,100%{border-color:rgba(239,62,66,.3);box-shadow:0 0 0 rgba(239,62,66,0)}50%{border-color:rgba(239,62,66,.8);box-shadow:0 0 20px rgba(239,62,66,.4)}}</style>
 <div id="preloader"><div class="background-pattern"></div><div class="corner-accent top-left"></div><div class="corner-accent top-right"></div><div class="corner-accent bottom-left"></div><div class="corner-accent bottom-right"></div><div class="center-content"><div class="loading-rings"><div class="ring ring-1"></div><div class="ring ring-2"></div><div class="ring ring-3"></div></div><div class="logo-circle"><img src="img/logo2.png" alt="Logo"></div><div class="status-text"><div class="main-status">INICIANDO</div><div class="sub-status">Cargando recursos</div><div class="progress-percentage" id="percentage">0%</div></div></div></div>
-<script>let percent=0;const percentageElement=document.getElementById('percentage'),percentInterval=setInterval(()=>{percent+=Math.floor(20*Math.random())+5,percent>=100&&(percent=100,clearInterval(percentInterval),setTimeout(()=>{const e=document.getElementById('preloader');e.classList.add('zoom-out'),setTimeout(()=>{e.remove()},800)},400)),percentageElement.textContent=percent+"%"},200);</script>
+<script>
+// DETECTAR ENLACE COMPARTIDO ANTES DE TODO
+const urlParams = new URLSearchParams(window.location.search);
+const isSharedLink = urlParams.get('share');
+
+if (isSharedLink) {
+  // Si es enlace compartido, ocultar preloader inmediatamente
+  const preloader = document.getElementById('preloader');
+  if (preloader) {
+    preloader.style.display = 'none';
+  }
+} else {
+  // Si NO es enlace compartido, ejecutar animación normal del preloader
+  let percent = 0;
+  const percentageElement = document.getElementById('percentage');
+  const percentInterval = setInterval(() => {
+    percent += Math.floor(20 * Math.random()) + 5;
+    if (percent >= 100) {
+      percent = 100;
+      clearInterval(percentInterval);
+      setTimeout(() => {
+        const e = document.getElementById('preloader');
+        e.classList.add('zoom-out');
+        setTimeout(() => {
+          e.remove();
+        }, 800);
+      }, 400);
+    }
+    percentageElement.textContent = percent + "%";
+  }, 200);
+}
+</script>
 
 <div class="h-screen w-full relative overflow-hidden" id="hero-section">
 <div class="absolute inset-0 hero-desktop-backfill transition-all duration-500 max-mobile:hidden"></div>
@@ -814,6 +845,6 @@ ORDENAR POR WHATSAPP
       </div>
   </div>
 </div>
-<script src="scripts.js?v=4.3.3.3"></script>
+<script src="scripts.js?v=1.0.2.3.4"></script>
 </body>
 </html>
